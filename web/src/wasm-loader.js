@@ -10,7 +10,8 @@ export async function loadSPHModule() {
     const mod = await createSphModule();
 
     // init particles in C++
-    mod._SPH_Init(100);
+    const N = 100;
+    mod._SPH_Init(N);
 
     const n = mod._SPH_Count();
     const xPtr = mod._SPH_GetX();
@@ -22,13 +23,8 @@ export async function loadSPHModule() {
 
     return {
         step: () => mod._SPH_Step(),
-        getPositions: () => {
-        const arr = new Float32Array(n * 2);
-            for (let i = 0; i < n; i++) {
-                arr[2 * i] = X[i];
-                arr[2 * i + 1] = Y[i];
-            } // end for
-            return arr;
-        }
+        count: N,
+        X,
+        Y
     };
 } // end loadSPHModule

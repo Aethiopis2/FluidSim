@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 EMCC=emcc
 
-$EMCC ../sim/sph.cpp ../sim/bindings.cpp -O3 -s WASM=1 \
-  -s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_NAME="createSphModule" \
-  -s EXPORTED_FUNCTIONS='["_SPH_Init","_SPH_Step","_SPH_GetX","_SPH_GetY","_SPH_Count"]' \
-  -s EXPORTED_RUNTIME_METHODS='["cwrap","getValue","setValue","HEAPF32"]' \
-  -s ALLOW_MEMORY_GROWTH=1 \
-  -o public/sph.js
-
-
-echo "WASM stub build finished"
+$EMCC ../sim/sph.cpp ../sim/bindings.cpp \
+    -o public/sph.js \
+    -s MODULARIZE \
+    -s EXPORT_ES6=1 \
+    -s ENVIRONMENT=web \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -s EXPORTED_RUNTIME_METHODS='["HEAPF32"]' \
+    --bind
+echo "sph.wasm build finished & sph.js generated"

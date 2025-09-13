@@ -9,16 +9,37 @@
 //============================================================|
 //          INCLUDES
 //============================================================|
+#include <vector>
 #include <cstdint>
 
 
+
+
 //============================================================|
-//          EXPORTS
+//          CLASS
 //============================================================|
-extern "C" {
-    void sph_init(int n);
-    void sph_step();
-    float* sph_getX();
-    float* sph_getY();
-    int sph_count();
-}
+class Sph
+{
+public:
+
+    Sph() = default;
+    void Init_Particles(const int n = 1000);
+
+    void Set_Gravity(const float g);
+    uintptr_t Get_X();
+    uintptr_t Get_Y();
+    uintptr_t Get_Vx();
+    uintptr_t Get_Vy();
+    int Get_Num_Particles() const;
+
+    void Set_Velocity(const int index, const float vx, const float vy);
+    void Set_Velocity_All(const float vx, const float vy);
+
+    void Step_Particles(const int dx);
+
+private:
+
+    int num_particles = 0;
+    std::vector<float> x, y, vx, vy;
+    float gravity = 9.8;
+};

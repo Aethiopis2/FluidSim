@@ -1,37 +1,27 @@
-import { useEffect, useRef } from 'react'
-import { loadSPHModule } from './wasm-loader';
+import { useEffect, useRef, useState } from 'react';
+import createModule from "/public/sph.js";
+import Canvas from './components/Canvas';
+import useTheme from "./useTheme";
+import Header from './components/Header';
+import ControlPanel from './components/ControlPanel';
+
 
 const App = () => {
-  const canvasRef = useRef(null);
+  const [isDark, setIsDark] = useTheme(true);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
+  return (
+    <div className={`flex flex-col h-screen ${isDark ? "bg-gray-900 text-white" : "bg-gray-100 text-black"}`}>
+      <Header isDark={isDark} setIsDark={setIsDark} />
 
-    (async () => {
-      const sph = await loadSPHModule();
-      const N = 100;    // number of particles
+      <main className="flex flex-1 overflow-hidden">
+        <div className="flex flex items-center justify-center bg-gray-950 dark:bg-gray-900">
+          <Canvas />
+        </div>
 
-      function draw() {
-        const positions = sph.getPositions(); // float array of x,y's
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "blue";
-
-        for (let i = 0; i < N; ++i) {
-          ctx.beginPath();
-          ctx.arc(positions[2 * i], positions[2 * i + 1], 3, 0, 2 * Math.PI);
-          ctx.fill();
-        } // end for
-
-        sph.step();
-        requestAnimationFrame(draw);
-      } // end draw
-
-      draw();
-    })();
-  }, []);
-
-  return <canvas ref={canvasRef} width={800} height={600} style={{border: "1px solid black"}} />
+        <ControlPanel />
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
